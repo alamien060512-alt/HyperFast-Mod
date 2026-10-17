@@ -6,7 +6,6 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,9 +38,8 @@ public abstract class ParticleEngineMixin {
 		}
 		if (HyperFastConfig.particleDistanceCull) {
 			Minecraft mc = Minecraft.getInstance();
-			if (mc.gameRenderer == null) return;
-			Vec3 cam = mc.gameRenderer.getMainCamera().getPosition();
-			double dx = x - cam.x, dy = y - cam.y, dz = z - cam.z;
+			if (mc.player == null) return;
+			double dx = x - mc.player.getX(), dy = y - mc.player.getY(), dz = z - mc.player.getZ();
 			double max = HyperFastConfig.particleMaxDistance;
 			if (dx * dx + dy * dy + dz * dz > max * max) {
 				cir.setReturnValue(null);
