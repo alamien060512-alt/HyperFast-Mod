@@ -1,0 +1,40 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version '1.17-SNAPSHOT'
+	id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	maven { url = 'https://maven.terraformersmc.com/releases/' }
+}
+
+dependencies {
+	// Mod Menu API for the settings button (compile-time only; optional at runtime).
+	compileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+	// 26.x is unobfuscated: no mappings line, plain implementation.
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+}
+
+processResources {
+	inputs.property "version", project.version
+	filesMatching("fabric.mod.json") {
+		expand "version": inputs.properties.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
